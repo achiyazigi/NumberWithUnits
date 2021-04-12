@@ -289,7 +289,7 @@ TEST_CASE("Operators"){
 
 TEST_CASE("achiyazigi_units"){
     ofstream outfile ("achiyazigi_units.txt");
-    outfile << "1 mile = 1609.34 m" << endl; // whats is it gonna be with those americans....
+    outfile << "1 mile = 1609.34 m" << endl; // whats is it gonna be with those americans...
     outfile << "1 km = 1000 m" << endl;
     outfile << "1 m = 100 cm" << endl;
     outfile << "1 l = 1000 ml" << endl;

@@ -20,21 +20,6 @@ static void generate_expected_throw(const string& unit1, const string& unit2) {
     throw_message_expected[length]='\0';
 }
 
-// Function to remove all spaces from a given string (taken from geeks)
-void removeSpaces(char *str)
-{
-    // To keep track of non-space character count
-    int count = 0;
-  
-    // Traverse the given string. If current character
-    // is not space, then place it at index 'count++'
-    for (int i = 0; str[i]; i++)
-        if (str[i] != ' ' || str[i] != '\t')
-            str[count++] = str[i]; // here count is
-                                   // incremented
-    str[count] = '\0';
-}
-
 // TEST_CASE("private checks") {
 //     ifstream units_file{"units.txt"};
 //     NumberWithUnits::read_units(units_file);

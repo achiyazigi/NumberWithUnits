@@ -286,13 +286,15 @@ TEST_CASE("Operators"){
 
 }
 
-TEST_CASE("achiyazigi_units"){
-    ofstream outfile ("achiyazigi_units.txt");
+TEST_CASE("achiyazigi_units"){ // the fun part
+    // creating new txt file with some new units
+    ofstream outfile ("achiyazigi_units.txt"); //    that's meee
+
     outfile << "1 mile = 1609.34 m" << endl; // whats is it gonna be with those americans...
     outfile << "1 km = 1000 m" << endl;
     outfile << "1 m = 100 cm" << endl;
     outfile << "1 l = 1000 ml" << endl;
-    outfile << "1 l = 0.264172 gal" << endl;
+    outfile << "1 l = 0.264172 gal" << endl; // yep
     outfile << "1 lb = 0.453592 kg" << endl;
     outfile << "1 day = 24 hour" << endl;
     outfile << "1 year = 365 day" << endl;
@@ -301,24 +303,33 @@ TEST_CASE("achiyazigi_units"){
     outfile << "1 EUR = 1.19 USD" << endl;
     outfile << "1 USD = 3.33 ILS" << endl;
     outfile.close();
-    ifstream myunits{"achiyazigi_units.txt"}; //    that's meee
+    ifstream myunits{"achiyazigi_units.txt"}; 
     NumberWithUnits::read_units(myunits);
-    remove("achiyazigi_units.txt");
+    remove("achiyazigi_units.txt"); // cleaning after myself...
+
     NumberWithUnits days;
     NumberWithUnits lb;
     NumberWithUnits year{1, "year"};
     NumberWithUnits lbtokg{3.78 * 0.453592, "kg"}; // 3.78 pound converted to kg
-    NumberWithUnits secinyear{60*60*24*365, "sec"}; // seconds in year
-    istringstream in{"365[day]"};
+    NumberWithUnits secinyear{60*60*24*365, "sec"}; // seconds in year = 1[year]
+    NumberWithUnits EUR{2.6, "EUR"};
+    NumberWithUnits ILS{2.6, "ILS"};
+    istringstream in{"365[day]"}; // = 1[year]
     in >> days;
     in.str("3.78[ lb]");
     in >> lb;
+
     CHECK_EQ(lb.number(), 3.78);
     CHECK_EQ(lb.units(), "lb");
     CHECK_EQ(lb, lbtokg);
-    CHECK(abs((lb + (lb * 0.5) - lbtokg * 1.5).number()) <= __DBL_EPSILON__ * 10);
+    CHECK(abs((lb + (lb * 0.5) - lbtokg * 1.5).number()) <= __DBL_EPSILON__ * 10); // division is not precise
     CHECK_EQ(days, year);
     CHECK_EQ(days * (1.0/(365 * 24)), NumberWithUnits{1, "hour"});
     CHECK_EQ(secinyear, year);
+    CHECK_EQ(secinyear, days);
     CHECK_EQ(secinyear + secinyear, 2 * year);
+
+    CHECK_NE(EUR, ILS);
+    CHECK_GT(EUR, ILS);
+    CHECK(abs((EUR - ILS * 3.33 * 1.19).number()) <= __DBL_EPSILON__ * 10); // division is not precise
 }

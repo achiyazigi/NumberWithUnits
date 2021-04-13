@@ -164,7 +164,6 @@ NumberWithUnits ariel::operator+(const NumberWithUnits& nu1, const NumberWithUni
     if(converted < 0){
         throw_invalid_arguments(nu1.units(), nu2.units());
     }
-
     return NumberWithUnits(nu1.number() + converted * nu2.number(), nu1.units());
 
 }
@@ -238,7 +237,7 @@ istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
     getline(is,str,']'); //fix it here!
     string str2 = str.c_str() + str.find_first_not_of(' ');
     size_t first_space = str2.find_first_of(' ');
-    if(str2.size() > first_space > 0){
+    if(str2.size() > first_space && first_space > 0){
         str2.resize(first_space);
     }
     nu._number = n;

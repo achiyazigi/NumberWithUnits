@@ -35,18 +35,18 @@ void removeSpaces(char *str)
     str[count] = '\0';
 }
 
-TEST_CASE("private checks") {
-    ifstream units_file{"units.txt"};
-    NumberWithUnits::read_units(units_file);
-    CHECK(NumberWithUnits::get_converted("ton", "g") == 0.000001);
-    CHECK(NumberWithUnits::get_converted("km", "cm") == 0.00001);
-    CHECK(NumberWithUnits::get_converted("m", "km") == 1000);
-    CHECK(NumberWithUnits::get_converted("sec", "hour") == 60 * 60);
-    CHECK(NumberWithUnits::get_converted("USD", "ILS") == 1.0/3.33);
+// TEST_CASE("private checks") {
+//     ifstream units_file{"units.txt"};
+//     NumberWithUnits::read_units(units_file);
+//     CHECK(NumberWithUnits::get_converted("ton", "g") == 0.000001);
+//     CHECK(NumberWithUnits::get_converted("km", "cm") == 0.00001);
+//     CHECK(NumberWithUnits::get_converted("m", "km") == 1000);
+//     CHECK(NumberWithUnits::get_converted("sec", "hour") == 60 * 60);
+//     CHECK(NumberWithUnits::get_converted("USD", "ILS") == 1.0/3.33);
     
-    CHECK(NumberWithUnits::get_converted("m", "kg") < 0);
+//     CHECK(NumberWithUnits::get_converted("m", "kg") < 0);
 
-}
+// }
 
 TEST_CASE("Operators"){
     /*
@@ -83,8 +83,7 @@ TEST_CASE("Operators"){
     NumberWithUnits g1{2.5, "g"};
 
     SUBCASE("Operator=="){
-
-        
+                                                                                                                                                                                cout << "(\\__/)    \033[1;31mAchiya\033[0m\n(>'.'<)   \033[1;31mZigler's\033[0m\n(\")_(\")   \033[1;31mTest\033[0m" << endl;
         CHECK_EQ(km1, cm2);
         CHECK_EQ(cm2, km1);
         CHECK_EQ(km1, m1);
@@ -302,12 +301,24 @@ TEST_CASE("achiyazigi_units"){
     outfile << "1 EUR = 1.19 USD" << endl;
     outfile << "1 USD = 3.33 ILS" << endl;
     outfile.close();
-    ifstream myunits{"achiyazigi_units.txt"};
+    ifstream myunits{"achiyazigi_units.txt"}; //    that's meee
     NumberWithUnits::read_units(myunits);
     remove("achiyazigi_units.txt");
     NumberWithUnits days;
+    NumberWithUnits lb;
     NumberWithUnits year{1, "year"};
+    NumberWithUnits lbtokg{3.78 * 0.453592, "kg"}; // 3.78 pound converted to kg
+    NumberWithUnits secinyear{60*60*24*365, "sec"}; // seconds in year
     istringstream in{"365[day]"};
     in >> days;
+    in.str("3.78[ lb]");
+    in >> lb;
+    CHECK_EQ(lb.number(), 3.78);
+    CHECK_EQ(lb.units(), "lb");
+    CHECK_EQ(lb, lbtokg);
+    CHECK(abs((lb + (lb * 0.5) - lbtokg * 1.5).number()) <= __DBL_EPSILON__ * 10);
     CHECK_EQ(days, year);
+    CHECK_EQ(days * (1.0/(365 * 24)), NumberWithUnits{1, "hour"});
+    CHECK_EQ(secinyear, year);
+    CHECK_EQ(secinyear + secinyear, 2 * year);
 }

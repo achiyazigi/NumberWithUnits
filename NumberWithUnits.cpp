@@ -127,7 +127,7 @@ void NumberWithUnits::read_units(std::ifstream& stream){
 /*
 * binary operators
 */
-NumberWithUnits NumberWithUnits::operator+=(const NumberWithUnits& other) {
+NumberWithUnits& NumberWithUnits::operator+=(const NumberWithUnits& other) {
     double converted = NumberWithUnits::get_converted(this->_units, other._units);
     if(converted < 0){
         throw_invalid_arguments(this->_units, other._units);
@@ -136,7 +136,7 @@ NumberWithUnits NumberWithUnits::operator+=(const NumberWithUnits& other) {
     return *this;
 
 }
-NumberWithUnits NumberWithUnits::operator-=(const NumberWithUnits& other) {
+NumberWithUnits& NumberWithUnits::operator-=(const NumberWithUnits& other) {
     double converted = NumberWithUnits::get_converted(this->_units, other._units);
     if(converted < 0){
         throw_invalid_arguments(this->_units, other._units);
@@ -145,7 +145,7 @@ NumberWithUnits NumberWithUnits::operator-=(const NumberWithUnits& other) {
     return *this;
 
 }
-NumberWithUnits NumberWithUnits::operator*=(const NumberWithUnits& other) {
+NumberWithUnits& NumberWithUnits::operator*=(const NumberWithUnits& other) {
     double converted = NumberWithUnits::get_converted(this->_units, other._units);
     if(converted < 0){
         throw_invalid_arguments(this->_units, other._units);

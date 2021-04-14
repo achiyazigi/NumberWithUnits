@@ -20,19 +20,6 @@ static void generate_expected_throw(const string& unit1, const string& unit2) {
     throw_message_expected[length]='\0';
 }
 
-// TEST_CASE("private checks") {
-//     ifstream units_file{"units.txt"};
-//     NumberWithUnits::read_units(units_file);
-//     CHECK(NumberWithUnits::get_converted("ton", "g") == 0.000001);
-//     CHECK(NumberWithUnits::get_converted("km", "cm") == 0.00001);
-//     CHECK(NumberWithUnits::get_converted("m", "km") == 1000);
-//     CHECK(NumberWithUnits::get_converted("sec", "hour") == 60 * 60);
-//     CHECK(NumberWithUnits::get_converted("USD", "ILS") == 1.0/3.33);
-    
-//     CHECK(NumberWithUnits::get_converted("m", "kg") < 0);
-
-// }
-
 TEST_CASE("Operators"){
     /*
      * min1 = sec1 < min2 = 2*min1 = 2*60*sec1 < hour1
@@ -249,6 +236,43 @@ TEST_CASE("Operators"){
         CHECK_THROWS_WITH(sec1 -= kg1;, throw_message_expected);
         generate_expected_throw(kg1.units(), min1.units());
         CHECK_THROWS_WITH(min1 -= kg1;, throw_message_expected);
+    }
+
+    SUBCASE("Operator++"){
+        
+        NumberWithUnits km_toinc = km1;
+        NumberWithUnits one_km{1, "km"};
+        CHECK_EQ(km_toinc++, km1);
+        CHECK_EQ(km_toinc, km1 + one_km);
+        CHECK_EQ(km_toinc++++, km1 + one_km++);
+        CHECK_EQ(km_toinc, km1 + one_km);
+    }
+
+    SUBCASE("Operator--"){
+        NumberWithUnits km_toinc = km1;
+        NumberWithUnits one_km{1, "km"};
+        CHECK_EQ(km_toinc--, km1);
+        CHECK_EQ(km_toinc, km1 - one_km);
+        CHECK_EQ(km_toinc----, km1 - one_km++);
+        CHECK_EQ(km_toinc, km1 - one_km);
+    }
+
+    SUBCASE("++Operator"){
+        NumberWithUnits km_toinc = km1;
+        NumberWithUnits one_km{1, "km"};
+        CHECK_EQ(++km_toinc, km1 + one_km);
+        CHECK_EQ(km_toinc, km1 + one_km++);
+        CHECK_EQ(++++km_toinc, km1 + ++one_km);
+        CHECK_EQ(++km_toinc, km1 + ++one_km);
+    }
+
+    SUBCASE("--Operator"){
+        NumberWithUnits km_toinc = km1;
+        NumberWithUnits one_km{1, "km"};
+        CHECK_EQ(--km_toinc, km1 - one_km);
+        CHECK_EQ(km_toinc, km1 - one_km++);
+        CHECK_EQ(----km_toinc, km1 - ++one_km);
+        CHECK_EQ(--km_toinc, km1 - ++one_km);
     }
 
     SUBCASE("Operator<<"){

@@ -48,11 +48,10 @@ namespace ariel{
         /*
          * binary operators
          */
-        NumberWithUnits operator+=(const NumberWithUnits& other);
-        NumberWithUnits operator-=(const NumberWithUnits& other);
-        NumberWithUnits operator*=(const NumberWithUnits& other);
-
-
+        NumberWithUnits& operator+=(const NumberWithUnits& other);
+        NumberWithUnits& operator-=(const NumberWithUnits& other);
+        NumberWithUnits& operator*=(const NumberWithUnits& other);
+        
         /*
          * friend global binary operators
          */
@@ -80,7 +79,7 @@ namespace ariel{
         /*
          * prefix inc operator
          */
-        NumberWithUnits operator++() {
+        NumberWithUnits& operator++() {
             _number++;
             return *this;
         }
@@ -88,7 +87,7 @@ namespace ariel{
         /*
          * prefix dcr operator
          */
-        NumberWithUnits operator--() {
+        NumberWithUnits& operator--() {
             _number--;
             return *this;
         }

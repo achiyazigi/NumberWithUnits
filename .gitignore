@@ -348,3 +348,17 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+.vscode/c_cpp_properties.json
+.gitignore
+.vscode/settings.json
+.vscode/tasks.json
+TestCounter.dSYM/Contents/Info.plist
+TestCounter.dSYM/Contents/Resources/DWARF/TestCounter
+.vscode/launch.json
+TestCounter.o
+Test.o
+test
+NumberWithUnits.o
+.DS_Store
+demo
+Demo.o

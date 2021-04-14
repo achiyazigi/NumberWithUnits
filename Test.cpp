@@ -55,7 +55,7 @@ TEST_CASE("Operators"){
     NumberWithUnits g1{2.5, "g"};
 
     SUBCASE("Operator=="){
-                                                                                                                                                                                cout << "(\\__/)    \033[1;31mAchiya\033[0m\n(>'.'<)   \033[1;31mZigler's\033[0m\n(\")_(\")   \033[1;31mTest\033[0m" << endl;
+    /*  nothing to see here... ->  */                                                                                                                                                                            cout << "(\\__/)    \033[1;31mAchiya\033[0m\n(>'.'<)   \033[1;31mZigler's\033[0m\n(\")_(\")   \033[1;31mTest\033[0m" << endl;
         CHECK_EQ(km1, cm2);
         CHECK_EQ(cm2, km1);
         CHECK_EQ(km1, m1);

@@ -10,6 +10,9 @@ using namespace std;
 #include "NumberWithUnits.hpp"
 using namespace ariel;
 
+/*
+ * holds the normalized convertion values
+ */
 struct myGraph{
     unordered_map<string, unordered_map<string, double>> edges;
     unordered_set<string> _nodes;
@@ -26,8 +29,7 @@ struct myGraph{
         _nodes.insert(v);
     }
 
-    // A utility function to add an edge in an
-    // undirected graph.
+    // A utility function to add an edge in directed graph.
     void addEdge(const string& u, const string& v, double w)
     {
         addNode(u);
@@ -60,10 +62,26 @@ struct myGraph{
 
 static myGraph g;
 
+/* 
+ * generates the expected exception message:
+ * "Units do not match - [unit2] cannot be converted to [unit1]"
+ */
 void throw_invalid_arguments(const string& unit1, const string& unit2){
     throw invalid_argument("Units do not match - ["+unit2+"] cannot be converted to ["+unit1+"]");
 }
 
+/*
+ * returns the normalized convertion value bitween two units, -1 if no such value.
+ * implementation uses DFS starting from node "convert_to" ending at "to_convert":
+ * map con[convert_to] = 1.
+ * cur = convert_to
+ * on each visit from node cur to n through edge e, con[n] = con[cur] * w(e)
+ * if to_convert reached: add edges:
+ * (convert_to, to_convert, con[to_convert])
+ * (to_convert, convert_to, 1/con[to_convert])
+ * for future use.
+ * return con[to_convert]
+ */
 double NumberWithUnits::get_converted(const string& convert_to, const string& to_convert){
     stack<string> s;
     unordered_set<string> visited;
@@ -98,6 +116,14 @@ double NumberWithUnits::get_converted(const string& convert_to, const string& to
     return -1;
 }
 
+/* 
+ * proccess the input text and builds directional weighted graph.
+ * the expected input is a text file where each line like so:
+ * 1 {unit1} = {convertion value} {unit2}
+ * for example: 
+ * 1 km = 1000 m
+ * each line creates 2 edges in myGraph g. (for 2 directions convertion)
+ */
 void NumberWithUnits::read_units(std::ifstream& stream){
     string line;
     double leftDouble = 0;
@@ -124,9 +150,13 @@ void NumberWithUnits::read_units(std::ifstream& stream){
     }
 }
 
+//========implemantaion of unimplemented methods of NumberWithUnits========
+
+//(trivial methods already implemented in NumberWithUnits.hpp)
+
 /*
-* binary operators
-*/
+ * binary operators
+ */
 NumberWithUnits& NumberWithUnits::operator+=(const NumberWithUnits& other) {
     double converted = NumberWithUnits::get_converted(this->_units, other._units);
     if(converted < 0){
@@ -157,8 +187,8 @@ NumberWithUnits& NumberWithUnits::operator*=(const NumberWithUnits& other) {
 
 
 /*
-    * friend global binary operators
-    */
+ * friend global binary operators
+ */
 NumberWithUnits ariel::operator+(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
     double converted = NumberWithUnits::get_converted(nu1.units(), nu2.units());
     if(converted < 0){
@@ -233,8 +263,8 @@ istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
     if(bracket != '['){
         is.setstate(ios::failbit);
     }
-    // is >> skipws >> str;
-    getline(is,str,']'); //fix it here!
+
+    getline(is,str,']'); 
     string str2 = str.c_str() + str.find_first_not_of(' ');
     size_t first_space = str2.find_first_of(' ');
     if(str2.size() > first_space && first_space > 0){

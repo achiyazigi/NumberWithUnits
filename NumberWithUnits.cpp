@@ -206,11 +206,7 @@ bool ariel::operator==(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
     if(converted < 0){
         throw_invalid_arguments(nu1._units, nu2._units);
     }
-
-    if(converted < 1){
-        return nu1.number() / converted == nu2.number();
-    }
-    return nu1.number() == converted * nu2.number();
+    return abs(nu1.number() - converted * nu2.number()) <= 10 * __DBL_EPSILON__;
 }
 
 bool ariel::operator!=(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
@@ -222,10 +218,8 @@ bool ariel::operator<=(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
     if(converted < 0){
         throw_invalid_arguments(nu1._units, nu2._units);
     }
-    if(converted < 1){
-        return nu1.number() / converted <= nu2.number();
-    }
-    return nu1.number() <= converted * nu2.number();
+    
+    return nu1.number() < converted * nu2.number() || nu1 == nu2;
 }
 
 bool ariel::operator>=(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
@@ -233,10 +227,8 @@ bool ariel::operator>=(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
     if(converted < 0){
         throw_invalid_arguments(nu1._units, nu2._units);
     }
-    if(converted < 1){
-        return nu1.number() / converted >= nu2.number();
-    }
-    return nu1.number() >= converted * nu2.number();
+   
+    return nu1.number() > converted * nu2.number() || nu1 == nu2;
 }
 
 bool ariel::operator<(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
@@ -252,7 +244,8 @@ bool ariel::operator>(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
 * friend global IO operators
 */
 ostream& ariel::operator<< (ostream& os, const NumberWithUnits& nu) {
-    return (os << nu.number() << '[' << nu.units() << ']');
+    os.precision(17);
+    return (os <<  nu.number() << '[' << nu.units() << ']');
 }
 istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
     double n = 0;
@@ -264,7 +257,7 @@ istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
         is.setstate(ios::failbit);
     }
 
-    getline(is,str,']'); 
+    getline(is,str,']'); // add raise failbit if no ']'
     string str2 = str.c_str() + str.find_first_not_of(' ');
     size_t first_space = str2.find_first_of(' ');
     if(str2.size() > first_space && first_space > 0){

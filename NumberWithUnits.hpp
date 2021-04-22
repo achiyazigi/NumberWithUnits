@@ -12,7 +12,7 @@ namespace ariel{
         std::string _units = "";
     public:
         NumberWithUnits(){}
-        NumberWithUnits(const double& number, const std::string& units): _number(number), _units(units){}
+        NumberWithUnits(const double& number, const std::string& units);
         ~NumberWithUnits() = default;
         static void read_units(std::ifstream& stream);
 
@@ -29,7 +29,7 @@ namespace ariel{
         /*
          * operators
          */
-        static double get_converted(const string& convert_to, const string& to_convert);
+        static double get_converted(const std::string& convert_to, const std::string& to_convert);
         
         /*
          * unary operators

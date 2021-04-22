@@ -363,3 +363,9 @@ NumberWithUnits.o
 demo
 Demo.o
 a.out
+grade_utils
+grade_utils
+filename.txt
+filename2.txt
+myTestFile.txt
+TestRunner

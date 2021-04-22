@@ -20,32 +20,7 @@ static void generate_expected_throw(const string& unit1, const string& unit2) {
     throw_message_expected[length]='\0';
 }
 
-double number(NumberWithUnits nu){
-    ostringstream os;
-    string num = "";
-    double res = 0;
-    os << nu;
-    size_t start = os.str().find_first_not_of(' ');
-    size_t size = os.str().find_first_of('[') - start;
-    num = os.str().substr(start ,size);
-
-    res = stod(num);
-    return res;
-}
-
-static string units(NumberWithUnits nu){
-    ostringstream os;
-    string units;
-    os << nu;
-    size_t start = os.str().find_first_of('[') + 1;
-    size_t size = os.str().find_first_of(']') - start;
-    units = os.str().substr(start ,size);
-
-    return units;
-}
-
 TEST_CASE("Operators"){
-    cout.precision(17);
     /*
      * min1 = sec1 < min2 = 2*min1 = 2*60*sec1 < hour1
      * cm1 < km2 < 2*km2 = km1 = 100000*cm1 = cm2 = m1
@@ -88,9 +63,9 @@ TEST_CASE("Operators"){
         CHECK_EQ(USD1, NIS1);
         CHECK_EQ(NIS1, USD1);
         
-        generate_expected_throw(units(cm1), units(min1));
+        generate_expected_throw(cm1.units(), min1.units());
         CHECK_THROWS_WITH(bool b = (min1 == cm1);, throw_message_expected);
-        generate_expected_throw(units(min1), units(cm1));
+        generate_expected_throw(min1.units(), cm1.units());
         CHECK_THROWS_WITH(bool b = (cm1 == min1);, throw_message_expected);
     }
 
@@ -100,9 +75,9 @@ TEST_CASE("Operators"){
         CHECK_NE(NIS2, USD1);
         CHECK_NE(NIS2, NIS1);
 
-        generate_expected_throw(units(cm1), units(min1));
+        generate_expected_throw(cm1.units(), min1.units());
         CHECK_THROWS_WITH(bool b = (min1 != cm1);, throw_message_expected);
-        generate_expected_throw(units(USD1), units(min1));
+        generate_expected_throw(USD1.units(), min1.units());
         CHECK_THROWS_WITH(bool b = (min1 != USD1);, throw_message_expected);
     }
 
@@ -113,9 +88,9 @@ TEST_CASE("Operators"){
         CHECK_LE(g1 * 999, kg1);
         CHECK_LE(kg1 * 999, ton1);
 
-        generate_expected_throw(units(cm1), units(kg1));
+        generate_expected_throw(cm1.units(), kg1.units());
         CHECK_THROWS_WITH(bool b = (kg1 <= cm1);, throw_message_expected);
-        generate_expected_throw(units(USD1), units(min1));
+        generate_expected_throw(USD1.units(), min1.units());
         CHECK_THROWS_WITH(bool b = (min1 <= USD1);, throw_message_expected);
     }
 
@@ -130,9 +105,9 @@ TEST_CASE("Operators"){
         CHECK_GE(km1, cm2);
         CHECK_GE(km2, cm1);
 
-        generate_expected_throw(units(USD1), units(g1));
+        generate_expected_throw(USD1.units(), g1.units());
         CHECK_THROWS_WITH(bool b = (g1 >= USD1), throw_message_expected);
-        generate_expected_throw(units(m1), units(sec1));
+        generate_expected_throw(m1.units(), sec1.units());
         CHECK_THROWS_WITH(bool b = (sec1 >= m1), throw_message_expected);
     }
 
@@ -146,9 +121,9 @@ TEST_CASE("Operators"){
         CHECK_LT(km2, cm2);
         CHECK_LT(cm1, km2);
 
-        generate_expected_throw(units(km1), units(g1));
+        generate_expected_throw(km1.units(), g1.units());
         CHECK_THROWS_WITH(bool b = (g1 < km1), throw_message_expected);
-        generate_expected_throw(units(m1), units(NIS1));
+        generate_expected_throw(m1.units(), NIS1.units());
         CHECK_THROWS_WITH(bool b = (NIS1 < m1), throw_message_expected);
     }
 
@@ -162,21 +137,21 @@ TEST_CASE("Operators"){
         CHECK_GT(cm2, km2);
         CHECK_GT(km2, cm1);
 
-        generate_expected_throw(units(km1), units(g1));
+        generate_expected_throw(km1.units(), g1.units());
         CHECK_THROWS_WITH(bool b = (g1 > km1), throw_message_expected);
-        generate_expected_throw(units(m1), units(NIS1));
+        generate_expected_throw(m1.units(), NIS1.units());
         CHECK_THROWS_WITH(bool b = (NIS1 > m1), throw_message_expected);
     }
 
     SUBCASE("Operator*"){
         NumberWithUnits min = min1 * 2;
         NumberWithUnits km = km1 * 2;
-        CHECK_EQ(number(min), 7);
-        CHECK_EQ(units(min), "min");
+        CHECK_EQ(min.number(), 7);
+        CHECK_EQ(min.units(), "min");
         CHECK_EQ(min, min2);
-        CHECK_NE(number(km), number(2 * km2));
-        CHECK_NE(number(km2), number(km1));
-        CHECK_EQ(units(km), "km");
+        CHECK_NE(km.number(), (2 * km2).number());
+        CHECK_NE(km2.number(), km1.number());
+        CHECK_EQ(km.units(), "km");
         CHECK_NE(km, km2);
         CHECK_EQ(km, 4 * km2);
         CHECK_EQ(g1 * 1000, kg1);
@@ -189,39 +164,39 @@ TEST_CASE("Operators"){
 
     SUBCASE("Operator+"){
         CHECK_EQ(sec1 + min1, min2);
-        CHECK_EQ(number(cm1 + km1), 350003.5);
-        CHECK_EQ(number((km1 + cm1)), 3.500035);
-        CHECK_EQ(number((hour1 + min1)), 1 + 3.5 / 60);
-        CHECK_EQ(number(min1 + hour1), 3.5 + 60);
-        CHECK_EQ(number(NIS1 + USD1), number(2 * USD1) * 3.33);
+        CHECK_EQ((cm1 + km1).number(), 350003.5);
+        CHECK_EQ((km1 + cm1).number(), 3.500035);
+        CHECK_EQ((hour1 + min1).number(), 1 + 3.5 / 60);
+        CHECK_EQ((min1 + hour1).number(), 3.5 + 60);
+        CHECK_EQ((NIS1 + USD1).number(), (2 * USD1).number() * 3.33);
         CHECK_EQ(USD1 + NIS1, 2 * USD1);
         CHECK_EQ(g1 + ton1, NumberWithUnits{2.5 * 1000 * 1000 + 2.5, "g"});
         CHECK_EQ(ton1 + kg1, NumberWithUnits{2.5 + 2.5 / 1000, "ton"});
 
-        generate_expected_throw(units(g1), units(km1));
+        generate_expected_throw(g1.units(), km1.units());
         CHECK_THROWS_WITH((km1 + g1) + sec1, throw_message_expected);
-        generate_expected_throw(units(sec1), units(g1));
+        generate_expected_throw(sec1.units(), g1.units());
         CHECK_THROWS_WITH(km1 + (g1 + sec1), throw_message_expected);
-        generate_expected_throw(units(USD1), units(ton1));
+        generate_expected_throw(USD1.units(), ton1.units());
         CHECK_THROWS_WITH(ton1 + USD1, throw_message_expected);
     }
 
     SUBCASE("Operator-"){
-        CHECK_EQ(number(min1 - hour1), 3.5 - 60);
-        CHECK_EQ(number(km1 - cm1), 3.5 - 0.000035);
-        CHECK_EQ(number(m1 - cm2), 0);
-        CHECK_EQ(number(USD1 - NIS1 - USD1), -8);
-        CHECK_EQ(+number(USD1 - NIS1 - USD1), -8); // yes, its not a mistake (read about unary plus)
-        CHECK_EQ(number(USD1 - NIS2), 8 - 8 / 3.33);
-        CHECK_EQ(number(NIS2 - USD2), 0);
-        CHECK_EQ((min1 - sec1 - min2), -min2); // unary - check
-        CHECK_EQ(-(min1 - sec1 - min2), min2); // unary - check
+        CHECK_EQ((min1 - hour1).number(), 3.5 - 60);
+        CHECK_EQ((km1 - cm1).number(), 3.5 - 0.000035);
+        CHECK_EQ((m1 - cm2).number(), 0);
+        CHECK_EQ((USD1 - NIS1 - USD1).number(), -8);
+        CHECK_EQ(+(USD1 - NIS1 - USD1).number(), -8); // yes, its not a mistake (read about unary plus)
+        CHECK_EQ((USD1 - NIS2).number(), 8 - 8 / 3.33);
+        CHECK_EQ((NIS2 - USD2).number(), 0);
+        CHECK_EQ((min1 - sec1 - min2), -min2);
+        CHECK_EQ(-(min1 - sec1 - min2), min2);
 
-        generate_expected_throw(units(g1), units(km1));
+        generate_expected_throw(g1.units(), km1.units());
         CHECK_THROWS_WITH((km1 - g1) + sec1, throw_message_expected);
-        generate_expected_throw(units(sec1), units(g1));
+        generate_expected_throw(sec1.units(), g1.units());
         CHECK_THROWS_WITH(km1 + (g1 - sec1), throw_message_expected);
-        generate_expected_throw(units(USD1), units(ton1));
+        generate_expected_throw(USD1.units(), ton1.units());
         CHECK_THROWS_WITH(ton1 - USD1, throw_message_expected);
     }
 
@@ -229,17 +204,17 @@ TEST_CASE("Operators"){
         NumberWithUnits km = km1; // = 3.5[km]
         NumberWithUnits m = m1; // = 3500[m]
         km += m; // = 7[km]
-        CHECK_EQ(number(km), 7);
-        CHECK_EQ(units(km), "km");
-        CHECK_EQ(number(km1), 3.5);
+        CHECK_EQ(km.number(), 7);
+        CHECK_EQ(km.units(), "km");
+        CHECK_EQ(km1.number(), 3.5);
         m += km; // = 10500[m]
         CHECK_EQ(m, km * 1.5);
-        CHECK_EQ(units(m), "m");
-        CHECK_EQ(number(m1), 3500);
+        CHECK_EQ(m.units(), "m");
+        CHECK_EQ(m1.number(), 3500);
 
-        generate_expected_throw(units(cm1), units(kg1));
+        generate_expected_throw(cm1.units(), kg1.units());
         CHECK_THROWS_WITH(kg1 += cm1;, throw_message_expected);
-        generate_expected_throw(units(USD1), units(min1));
+        generate_expected_throw(USD1.units(), min1.units());
         CHECK_THROWS_WITH(min1 += USD1;, throw_message_expected);
         km.~NumberWithUnits();
     }
@@ -249,17 +224,17 @@ TEST_CASE("Operators"){
         NumberWithUnits USD_second = USD2;
         NumberWithUnits NIS = NIS1;
         USD_first -= USD_second;
-        CHECK_EQ(number(USD_first), 8 - 8 / 3.33);
-        CHECK_EQ(units(USD_first), "USD");
-        CHECK_EQ(number(USD1), 8);
+        CHECK_EQ((USD_first).number(), 8 - 8 / 3.33);
+        CHECK_EQ(USD_first.units(), "USD");
+        CHECK_EQ(USD1.number(), 8);
         NIS -= USD_second;
-        CHECK_EQ(number(NIS), 8 * 3.33 - 8);
-        CHECK_EQ(units(NIS), "ILS");
-        CHECK_EQ(number(NIS1), 8 * 3.33);
+        CHECK_EQ(NIS.number(), 8 * 3.33 - 8);
+        CHECK_EQ(NIS.units(), "ILS");
+        CHECK_EQ(NIS1.number(), 8 * 3.33);
 
-        generate_expected_throw(units(kg1), units(sec1));
+        generate_expected_throw(kg1.units(), sec1.units());
         CHECK_THROWS_WITH(sec1 -= kg1;, throw_message_expected);
-        generate_expected_throw(units(kg1), units(min1));
+        generate_expected_throw(kg1.units(), min1.units());
         CHECK_THROWS_WITH(min1 -= kg1;, throw_message_expected);
     }
 
@@ -314,14 +289,13 @@ TEST_CASE("Operators"){
         istringstream sinput("2.0000008 [  zigi   ]");
         sinput >> new_NumberWithUnits;
         CHECK(sinput);
-        CHECK_EQ(number(new_NumberWithUnits), 2.0000008);
-        CHECK_EQ(units(new_NumberWithUnits), "zigi");
+        CHECK_EQ(new_NumberWithUnits.number(), 2.0000008);
+        CHECK_EQ(new_NumberWithUnits.units(), "zigi");
     }
 
 }
 
 TEST_CASE("achiyazigi_units"){ // the fun part
-    cout.precision(17);
     // creating new txt file with some new units
     ofstream outfile ("achiyazigi_units.txt"); //    that's meee
 
@@ -354,10 +328,10 @@ TEST_CASE("achiyazigi_units"){ // the fun part
     in.str("3.78[ lb]");
     in >> lb;
 
-    CHECK_EQ(number(lb), 3.78);
-    CHECK_EQ(units(lb), "lb");
+    CHECK_EQ(lb.number(), 3.78);
+    CHECK_EQ(lb.units(), "lb");
     CHECK_EQ(lb, lbtokg);
-    CHECK_EQ(lb + 0.5 * lb, 1.5 * lbtokg); // make sure you've set TOLERANCE if you've failed here
+    CHECK(abs((lb + (lb * 0.5) - lbtokg * 1.5).number()) <= __DBL_EPSILON__ * 10); // division is not precise
     CHECK_EQ(days, year);
     CHECK_EQ(days * (1.0/(365 * 24)), NumberWithUnits{1, "hour"});
     CHECK_EQ(secinyear, year);
@@ -366,6 +340,5 @@ TEST_CASE("achiyazigi_units"){ // the fun part
 
     CHECK_NE(EUR, ILS);
     CHECK_GT(EUR, ILS);
-    CHECK_EQ(EUR, ILS * 3.33 * 1.19); // make sure you've set TOLERANCE if you've failed here
-
+    CHECK(abs((EUR - ILS * 3.33 * 1.19).number()) <= __DBL_EPSILON__ * 10); // division is not precise
 }

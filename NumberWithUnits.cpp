@@ -142,8 +142,6 @@ void NumberWithUnits::read_units(std::ifstream& stream){
         linestream >> skipws >> rightDouble; 
         linestream >> skipws >> rightString;
         
-        NumberWithUnits value1(rightDouble, rightString); 
-        NumberWithUnits value2(leftDouble, leftString); 
         g.addEdge(leftString, rightString, leftDouble / rightDouble);
         g.addEdge(rightString, leftString, rightDouble / leftDouble);
  
@@ -153,6 +151,14 @@ void NumberWithUnits::read_units(std::ifstream& stream){
 //========implemantaion of unimplemented methods of NumberWithUnits========
 
 //(trivial methods already implemented in NumberWithUnits.hpp)
+/**
+ * constructor
+ */
+NumberWithUnits::NumberWithUnits(const double& number, const std::string& units): _number(number), _units(units){
+    if(!(g._nodes.contains(units))){
+        throw invalid_argument("unit named: ["+units+"] have not been initialized");
+    }
+}
 
 /*
  * binary operators
@@ -206,7 +212,8 @@ bool ariel::operator==(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
     if(converted < 0){
         throw_invalid_arguments(nu1._units, nu2._units);
     }
-    return abs(nu1.number() - converted * nu2.number()) <= 10 * __DBL_EPSILON__;
+    double TOLARENCE = 0.00001;
+    return abs(nu1.number() - converted * nu2.number()) <= TOLARENCE;
 }
 
 bool ariel::operator!=(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
@@ -244,7 +251,7 @@ bool ariel::operator>(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
 * friend global IO operators
 */
 ostream& ariel::operator<< (ostream& os, const NumberWithUnits& nu) {
-    os.precision(17);
+    // os.precision(17);
     return (os <<  nu.number() << '[' << nu.units() << ']');
 }
 istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
@@ -262,6 +269,9 @@ istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
     size_t first_space = str2.find_first_of(' ');
     if(str2.size() > first_space && first_space > 0){
         str2.resize(first_space);
+    }
+    if(!g.nodes().contains(str2)){
+        throw invalid_argument{"unit named: ["+str2+"] have not been initialized"};
     }
     nu._number = n;
     nu._units = str2;

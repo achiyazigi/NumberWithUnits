@@ -23,6 +23,7 @@ void get_file_name(string& str){
 }
 
 int main() {
+    std::streamsize ss = std::cout.precision();
     string input_file_name;
     get_file_name(input_file_name);
     
@@ -43,18 +44,63 @@ int main() {
      * 1 min = 60 sec
      * 1 USD = 3.33 ILS
      */
-    NumberWithUnits km1;
-    NumberWithUnits m1{1, "m"};
-    NumberWithUnits cm1{1, "cm"};
-    NumberWithUnits km2 = 1000 * m1; // = km1
-    NumberWithUnits m2 = 100 * cm1; // = m1
-    NumberWithUnits cm2 = km1 * (1.0/100000); // = cm1
+    NumberWithUnits a;
+    NumberWithUnits b;
+    string oper;
     cout << "the following input file has been processed successfuly: " << input_file_name << endl;
     cout << "insert 1st unit (format example: 1[km]): ";
-    cin >> km1;
-    cout << km1 << endl;
+    cin >> a;
     cout << "insert 2nd unit (format example: 100[cm]): ";
-    cin >> km1;
-    cout << km1 << endl;
+    cin >> b;
+    cout << "choose an operator: (+,-,==,!=,<=,>=,<,>,+=,-=,*=,++,--)" << endl;
+    cin >> skipws >> oper;
+    cout.precision(ss);
+    if(oper == "+"){
+        cout << a << oper << b << '=' << a+b << endl;
+        cout << boolalpha << ((a+b).number() == 1.3 )<< endl;
+    }
+    else if(oper == "-"){
+        
+    }
+    else if(oper == "<<"){
+
+    }
+    else if(oper == ">>"){
+
+    }
+    else if(oper == "=="){
+
+    }
+    else if(oper == "!="){
+
+    }
+    else if(oper == "<="){
+
+    }
+    else if(oper == ">="){
+
+    }
+    else if(oper == "<"){
+
+    }
+    else if(oper == ">"){
+
+    }
+    else if(oper == "+="){
+
+    }
+    else if(oper == "-="){
+
+    }
+    else if(oper == "*="){
+
+    }
+    else if(oper == "++"){
+
+    }
+    else if(oper == "--"){
+
+    }
+    
     return 0;
 }

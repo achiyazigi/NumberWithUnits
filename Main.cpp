@@ -52,7 +52,7 @@ int main() {
     cin >> a;
     cout << "insert 2nd unit (format example: 100[cm]): ";
     cin >> b;
-    cout << "choose an operator: (+,-,==,!=,<=,>=,<,>,+=,-=,*=,++,--,<<)" << endl;
+    cout << "choose an operator: (+,-,==,!=,<=,>=,<,>,+=,-=,++,--,<<)" << endl;
     cin >> skipws >> oper;
     cout.precision(ss);
     cout << boolalpha;
@@ -86,14 +86,11 @@ int main() {
     else if(oper == "-="){
         cout << a << oper << b << '=' << (a-=b) << endl;
     }
-    else if(oper == "*="){
-        cout << a << oper << b << '=' << (a*=b) << endl;
-    }
     else if(oper == "++"){
-        cout << a << oper << '=' << a++ << ' ' << b << '=' << b++ << endl;
+        cout << a << oper << '=' << ++a << ' ' << b << oper << '=' << ++b << endl;
     }
     else if(oper == "--"){
-        cout << a << oper << '=' << a-- << ' ' << b << '=' << b-- << endl;
+        cout << a << oper << '=' << --a << ' ' << b << oper << '=' << --b << endl;
     }
     else if(oper == "<<"){
         cout << "first: " << a << " second: " << b << endl;

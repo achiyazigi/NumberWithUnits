@@ -50,7 +50,7 @@ namespace ariel{
          */
         NumberWithUnits& operator+=(const NumberWithUnits& other);
         NumberWithUnits& operator-=(const NumberWithUnits& other);
-        NumberWithUnits& operator*=(const NumberWithUnits& other);
+        NumberWithUnits& operator*=(const double& d);
         
         /*
          * friend global binary operators

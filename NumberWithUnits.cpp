@@ -42,8 +42,10 @@ struct myGraph{
 
     // returns edge (u,v) value.
     double getEdge(const string& u, const string& v){
-        if(_nodes.contains(u) && _nodes.contains(v))
+        if(_nodes.contains(u) && _nodes.contains(v)){
             return edges[u][v];
+        }
+        
         return -1;
     }
 
@@ -218,7 +220,7 @@ bool ariel::operator==(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
     if(converted < 0){
         throw_invalid_arguments(nu1._units, nu2._units);
     }
-    double TOLARENCE = 0.00001;
+    const double TOLARENCE = 0.00001;
     return abs(nu1.number() - converted * nu2.number()) <= TOLARENCE;
 }
 
@@ -277,12 +279,12 @@ istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
 
     // get th string bitween [] brackets:
     getline(is,str,']');
-    if(str.find('\n') != str.npos){ // no ']' found in input line
+    if(str.find('\n') != string::npos){ // no ']' found in input line
         is.setstate(ios::failbit);
     }
 
     // here the program will throw the exception if the input was wrong:
-    auto errorState = is.rdstate();
+    // auto errorState = is.rdstate();
     if(is.fail()){
         throw invalid_argument{"wrong input format"};
     }

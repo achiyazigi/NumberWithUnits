@@ -1,7 +1,7 @@
 #!make -f
 
 CXX=clang++-9 
-CXXFLAGS=-std=c++2a -Werror -Wsign-conversion -g
+CXXFLAGS=-std=c++2a -Werror -Wsign-conversion
 VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
 
 SOURCES=NumberWithUnits.cpp
@@ -19,7 +19,7 @@ test3: TestRunner.o StudentTest3.o  $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 main: Main.o $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ -o main
+	$(CXX) -lreadline -lncurses $(CXXFLAGS) $^ -o main
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) --compile $< -o $@

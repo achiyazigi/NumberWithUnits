@@ -29,6 +29,7 @@ void get_file_name(string& str){
 }
 
 void init_units_file(string input_file_name){
+    units_file.close();
     units_file.open(input_file_name);
     while(units_file.fail()){
         cout << "reading from " << input_file_name << " failed." << endl;
@@ -65,6 +66,7 @@ void show_menu(){
 
 
 int main() {
+    init_units_file("defaults.txt");
     std::streamsize ss = std::cout.precision();
     string input_file_name;
     get_file_name(input_file_name);
@@ -80,14 +82,14 @@ int main() {
      * 1 min = 60 sec
      * 1 USD = 3.33 ILS
      */
-    NumberWithUnits a;
-    NumberWithUnits b;
+    NumberWithUnits a{1, "def"};
+    NumberWithUnits b{1, "def"};
     string oper;
-    while(a.units() == ""){
+    while(a.units() == "def"){
         cout << "insert 1st unit (format example: 1[km]): ";
         change_var(a);
     }
-    while(b.units() == ""){
+    while(b.units() == "def"){
         cout << "insert 2nd unit (format example: 100[cm]): ";
         change_var(b);
     }

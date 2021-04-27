@@ -11,7 +11,7 @@ namespace ariel{
         double _number = 0;
         std::string _units = "";
     public:
-        NumberWithUnits()=default;
+        // NumberWithUnits()=default;
         NumberWithUnits(const double& number, const std::string& units);
         NumberWithUnits(const NumberWithUnits& other):_number{other.number()}, _units{other.units()} {}
         ~NumberWithUnits() = default;

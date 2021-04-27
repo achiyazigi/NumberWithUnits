@@ -255,38 +255,35 @@ istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
     string str;
     // read the number:
     is >> skipws >> n;
-
+    
     //skip spaces
     while(is.peek() == ' ' || is.peek() == '\t'){
         is.ignore();
     }
 
-    // check if no more input
-    if(is.peek() == '\n'){
+    // check if no more input and existence of []
+    if(is.peek() != '['){
         is.setstate(ios::failbit);
-    }
-
-    // get the rest input for further process
-
-
-    else{
-        getline(is, str, ']');
-    }
-    // '[' has to be the next char:
-    if(!str.starts_with('[')){
-        is.setstate(ios::failbit);
-    }
-
-    else{
-        // get the string bitween [] brackets:
-        str = str.c_str()+1;
-    }
-
-    // here the program will throw the exception if the input was wrong:
-    // auto errorState = is.rdstate();
-    if(is.fail()){
+        cin.ignore(numeric_limits<streamsize>::max(),'\n'); // clear the buffer
         throw invalid_argument{"wrong input format"};
     }
+    char next_c = is.get(); // should be '['
+
+    // search for ']'
+    while(next_c != ']' && next_c != '\n' && next_c != istream::eofbit){
+        str += next_c; // prepare for later
+        next_c = is.get();
+    }
+
+    if(next_c != ']'){ // input ended without ']'
+        is.setstate(ios::failbit);
+        cin.ignore(numeric_limits<streamsize>::max(),'\n'); // clear the buffer
+        throw invalid_argument{"wrong input format"};
+    }
+    
+    // get the string bitween [] brackets:
+    str = str.c_str()+1;
+
 
     // since the units name should be spaceless (by inputfile definition),
     // the input will be the first word in the brackets:
@@ -298,7 +295,8 @@ istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
 
     // check if units from input exsits in myGraph g:
     if(!g.nodes().contains(str2)){
-        throw invalid_argument{"unit named: ["+str2+"] have not been initialized"};
+        is.setstate(ios::failbit);
+        throw invalid_argument{"unit named: ["+str2+"] has not been initialized"};
     }
 
     // input completed seccessfully.

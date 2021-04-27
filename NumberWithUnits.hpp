@@ -11,8 +11,9 @@ namespace ariel{
         double _number = 0;
         std::string _units = "";
     public:
-        NumberWithUnits(){}
+        NumberWithUnits()=default;
         NumberWithUnits(const double& number, const std::string& units);
+        NumberWithUnits(const NumberWithUnits& other):_number{other.number()}, _units{other.units()} {}
         ~NumberWithUnits() = default;
         static void read_units(std::ifstream& stream);
 
@@ -51,6 +52,15 @@ namespace ariel{
         NumberWithUnits& operator+=(const NumberWithUnits& other);
         NumberWithUnits& operator-=(const NumberWithUnits& other);
         NumberWithUnits& operator*=(const double& d);
+
+        NumberWithUnits operator+(const NumberWithUnits& other) const;
+        NumberWithUnits operator-(const NumberWithUnits& other) const;
+        bool operator==(const NumberWithUnits& other) const;
+        bool operator!=(const NumberWithUnits& other) const;
+        bool operator<=(const NumberWithUnits& other) const;
+        bool operator>=(const NumberWithUnits& other) const;
+        bool operator<(const NumberWithUnits& other) const;
+        bool operator>(const NumberWithUnits& other) const;
         
         /*
          * friend global binary operators
@@ -61,14 +71,6 @@ namespace ariel{
         friend const NumberWithUnits operator*(const double& scalar, const NumberWithUnits& nu) {
             return NumberWithUnits(nu._number * scalar, nu._units);
         }
-        NumberWithUnits operator+(const NumberWithUnits& other) const;
-        NumberWithUnits operator-(const NumberWithUnits& other) const;
-        bool operator==(const NumberWithUnits& other) const;
-        bool operator!=(const NumberWithUnits& other) const;
-        bool operator<=(const NumberWithUnits& other) const;
-        bool operator>=(const NumberWithUnits& other) const;
-        bool operator<(const NumberWithUnits& other) const;
-        bool operator>(const NumberWithUnits& other) const;
 
         /*
          * friend global IO operators

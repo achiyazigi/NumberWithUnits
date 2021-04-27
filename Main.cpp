@@ -39,6 +39,18 @@ void init_units_file(string input_file_name){
     NumberWithUnits::read_units(units_file);
 }
 
+void change_var(NumberWithUnits& var){
+    try{
+        cin >> var;
+    }
+    catch(invalid_argument e){
+        cout << e.what() << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(),'\n'); // clear the buffer
+
+    }
+}
+
 void show_menu(){
     cout << "===========menu===========" << endl;
     cout << "|e:     end session      |" << endl;
@@ -71,10 +83,14 @@ int main() {
     NumberWithUnits a;
     NumberWithUnits b;
     string oper;
-    cout << "insert 1st unit (format example: 1[km]): ";
-    cin >> a;
-    cout << "insert 2nd unit (format example: 100[cm]): ";
-    cin >> b;
+    while(a.units() == ""){
+        cout << "insert 1st unit (format example: 1[km]): ";
+        change_var(a);
+    }
+    while(b.units() == ""){
+        cout << "insert 2nd unit (format example: 100[cm]): ";
+        change_var(b);
+    }
     show_menu();
     cout.precision(ss);
     cout << boolalpha;

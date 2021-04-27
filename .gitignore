@@ -364,7 +364,6 @@ demo
 Demo.o
 a.out
 grade_utils
-grade_utils
 filename.txt
 filename2.txt
 myTestFile.txt
@@ -379,9 +378,7 @@ StudentTest3.o
 TestRunner.o
 StudentTest3.cpp
 StudentTest1.cpp
-main
-main
-main
 package-lock.json
 main
 inputs.txt
+Main.o

@@ -264,23 +264,33 @@ ostream& ariel::operator<< (ostream& os, const NumberWithUnits& nu) {
 
 istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
     double n = 0;
-    string str;
-    char bracket = 0;
+    string str = "";
     // read the number:
-    is >> n;
+    is >> skipws >> n;
 
-    // skip spaces:
-    is >> skipws >> bracket;
+    //skip spaces
+    while(is.peek() == ' ' || is.peek() == '\t'){
+        is.ignore();
+    }
 
-    // '[' has to be the next char:
-    if(bracket != '['){
+    // check if no more input
+    if(is.peek() == '\n'){
         is.setstate(ios::failbit);
     }
 
-    // get th string bitween [] brackets:
-    getline(is,str,']');
-    if(str.find('\n') != string::npos){ // no ']' found in input line
+    // get the rest input for further process
+    else{
+        getline(is, str);
+    }
+    
+    // '[' has to be the next char && ']' has to be in str:
+    if(!str.starts_with('[') || str.find(']') == string::npos){
         is.setstate(ios::failbit);
+    }
+    
+    else{
+        // get the string bitween [] brackets:
+        str = str.substr(1,str.find_first_of(']')-1);
     }
 
     // here the program will throw the exception if the input was wrong:

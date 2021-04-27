@@ -15,19 +15,17 @@ void get_file_name(string& str){
     cout << "insert input file name, enter nothing for units.txt (default): ";
     char* line = readline("");
     str.assign(line);
+
+    // getting rid of the spaces at the end
     if(str.ends_with(' ')){
-        str.resize(str.size()-1);
+        str.resize(str.find_last_not_of(' ')+1);
     }
-    //TODO: rtrim line
+
     if(str.empty())
     {
         str = "units.txt";
     }
-    // }
-    // else
-    // {
-    //     std::cout << "Input failed - no more input?" << std::endl;
-    // }
+   
 }
 
 void init_units_file(string input_file_name){
@@ -154,9 +152,7 @@ int main() {
         catch(invalid_argument e){
             cout << e.what() << endl;
             cin.clear();
-            cin.sync();
-            // cin.ignore(SIZE_MAX);
-            cin >> oper;
+            cin.ignore((streamsize)SIZE_MAX);
         }
     }
     while (oper != "e" && oper != "end");

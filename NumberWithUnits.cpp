@@ -264,7 +264,7 @@ ostream& ariel::operator<< (ostream& os, const NumberWithUnits& nu) {
 
 istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
     double n = 0;
-    string str = "";
+    string str;
     // read the number:
     is >> skipws >> n;
 
@@ -279,18 +279,19 @@ istream& ariel::operator>> (istream& is, NumberWithUnits& nu) {
     }
 
     // get the rest input for further process
+
+
     else{
-        getline(is, str);
+        getline(is, str, ']');
     }
-    
-    // '[' has to be the next char && ']' has to be in str:
-    if(!str.starts_with('[') || str.find(']') == string::npos){
+    // '[' has to be the next char:
+    if(!str.starts_with('[')){
         is.setstate(ios::failbit);
     }
-    
+
     else{
         // get the string bitween [] brackets:
-        str = str.substr(1,str.find_first_of(']')-1);
+        str = str.c_str()+1;
     }
 
     // here the program will throw the exception if the input was wrong:

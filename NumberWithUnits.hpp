@@ -61,14 +61,14 @@ namespace ariel{
         friend const NumberWithUnits operator*(const double& scalar, const NumberWithUnits& nu) {
             return NumberWithUnits(nu._number * scalar, nu._units);
         }
-        friend NumberWithUnits operator+(const NumberWithUnits& nu1, const NumberWithUnits& nu2) ;
-        friend NumberWithUnits operator-(const NumberWithUnits& nu1, const NumberWithUnits& nu2) ;
-        friend bool operator==(const NumberWithUnits& nu1, const NumberWithUnits& nu2);
-        friend bool operator!=(const NumberWithUnits& nu1, const NumberWithUnits& nu2);
-        friend bool operator<=(const NumberWithUnits& nu1, const NumberWithUnits& nu2);
-        friend bool operator>=(const NumberWithUnits& nu1, const NumberWithUnits& nu2);
-        friend bool operator<(const NumberWithUnits& nu1, const NumberWithUnits& nu2);
-        friend bool operator>(const NumberWithUnits& nu1, const NumberWithUnits& nu2);
+        NumberWithUnits operator+(const NumberWithUnits& other) const;
+        NumberWithUnits operator-(const NumberWithUnits& other) const;
+        bool operator==(const NumberWithUnits& other) const;
+        bool operator!=(const NumberWithUnits& other) const;
+        bool operator<=(const NumberWithUnits& other) const;
+        bool operator>=(const NumberWithUnits& other) const;
+        bool operator<(const NumberWithUnits& other) const;
+        bool operator>(const NumberWithUnits& other) const;
 
         /*
          * friend global IO operators

@@ -176,20 +176,12 @@ NumberWithUnits::NumberWithUnits(const double& number, const std::string& units)
  * binary operators
  */
 NumberWithUnits& NumberWithUnits::operator+=(const NumberWithUnits& other) {
-    double converted = NumberWithUnits::get_converted(this->_units, other._units);
-    if(converted < 0){
-        throw_invalid_arguments(this->_units, other._units);
-    }
-    this->_number += converted * other._number;
+    *this = *this + other;
     return *this;
 
 }
 NumberWithUnits& NumberWithUnits::operator-=(const NumberWithUnits& other) {
-    double converted = NumberWithUnits::get_converted(this->_units, other._units);
-    if(converted < 0){
-        throw_invalid_arguments(this->_units, other._units);
-    }
-    this->_number -= converted * other._number;
+    *this = *this - other;
     return *this;
 
 }
@@ -199,59 +191,55 @@ NumberWithUnits& NumberWithUnits::operator*=(const double& d) {
 
 }
 
-
-/*
- * friend global binary operators
- */
-NumberWithUnits ariel::operator+(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
-    double converted = NumberWithUnits::get_converted(nu1.units(), nu2.units());
+NumberWithUnits NumberWithUnits::operator+(const NumberWithUnits& other) const{
+    double converted = NumberWithUnits::get_converted(this->units(), other.units());
     if(converted < 0){
-        throw_invalid_arguments(nu1.units(), nu2.units());
+        throw_invalid_arguments(this->units(), other.units());
     }
-    return NumberWithUnits(nu1.number() + converted * nu2.number(), nu1.units());
+    return NumberWithUnits(this->number() + converted * other.number(), this->units());
 
 }
-NumberWithUnits ariel::operator-(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
-    return nu1 + -nu2;
+NumberWithUnits NumberWithUnits::operator-(const NumberWithUnits& other) const{
+    return *this + -other;
 
 }
-bool ariel::operator==(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
-    double converted = NumberWithUnits::get_converted(nu1.units(), nu2.units());
+bool NumberWithUnits::operator==(const NumberWithUnits& other) const{
+    double converted = get_converted(this->units(), other.units());
     if(converted < 0){
-        throw_invalid_arguments(nu1._units, nu2._units);
+        throw_invalid_arguments(this->units(), other.units());
     }
     const double TOLARENCE = 0.00001;
-    return abs(nu1.number() - converted * nu2.number()) <= TOLARENCE;
+    return abs(this->number() - converted * other.number()) <= TOLARENCE;
 }
 
-bool ariel::operator!=(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
-    return !(nu1 == nu2);
+bool NumberWithUnits::operator!=(const NumberWithUnits& other) const{
+    return !(*this == other);
 }
 
-bool ariel::operator<=(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
-    double converted = NumberWithUnits::get_converted(nu1.units(), nu2.units());
+bool NumberWithUnits::operator<=(const NumberWithUnits& other) const{
+    double converted = NumberWithUnits::get_converted(this->units(), other.units());
     if(converted < 0){
-        throw_invalid_arguments(nu1._units, nu2._units);
+        throw_invalid_arguments(this->units(), other.units());
     }
     
-    return nu1.number() < converted * nu2.number() || nu1 == nu2;
+    return this->number() < converted * other.number() || *this == other;
 }
 
-bool ariel::operator>=(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
-    double converted = NumberWithUnits::get_converted(nu1.units(), nu2.units());
+bool NumberWithUnits::operator>=(const NumberWithUnits& other) const{
+    double converted = NumberWithUnits::get_converted(this->units(), other.units());
     if(converted < 0){
-        throw_invalid_arguments(nu1._units, nu2._units);
+        throw_invalid_arguments(this->units(), other.units());
     }
    
-    return nu1.number() > converted * nu2.number() || nu1 == nu2;
+    return this->number() > converted * other.number() || *this == other;
 }
 
-bool ariel::operator<(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
-    return !(nu1 >= nu2);
+bool NumberWithUnits::operator<(const NumberWithUnits& other) const{
+    return !(*this >= other);
     
 }
-bool ariel::operator>(const NumberWithUnits& nu1, const NumberWithUnits& nu2) {
-    return !(nu1 <= nu2);
+bool NumberWithUnits::operator>(const NumberWithUnits& other) const{
+    return !(*this <= other);
 
 }
 
